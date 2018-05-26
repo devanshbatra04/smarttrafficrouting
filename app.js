@@ -12,6 +12,7 @@ mongoose.connect("mongodb://localhost/Evenox");
 
 var app = express();
 app.set('view engine', 'ejs');
+app.use(bodyParser.urlencoded({extended: true}));
 
 
 app.use(require("express-session")({
@@ -34,6 +35,24 @@ app.get("/register", function(req, res){
 
 app.get("/", function(req,res){
     res.render("home");
+});
+
+app.post("/register", function(req,res){
+    User.register(new User({
+        username : req.body.username,
+    }), req.body.password, function(err, user){
+        if (err){
+            console.log(err);
+            res.render('register');
+        }
+        else {
+            console.log("user registered");
+            passport.authenticate("local")(req,res, function(){
+                res.redirect("secret");
+            })
+        }
+    });
+    console.log("Posted");
 });
 
 app.get("/secret", function(req,res){

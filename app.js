@@ -40,6 +40,9 @@ app.get("/", function(req,res){
 app.post("/register", function(req,res){
     User.register(new User({
         username : req.body.username,
+        email : req.body.email,
+        name: req.body.name,
+        phoneNumber: req.body.phone
     }), req.body.password, function(err, user){
         if (err){
             console.log(err);

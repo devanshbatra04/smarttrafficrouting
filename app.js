@@ -88,9 +88,6 @@ function isLoggedIn(req,res,next){
     }
 }
 
-app.get("/events", function(req,res){
-    res.send("<h1>Events will be populated here</h1>");
-});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -5,6 +5,7 @@ const express                = require('express'),
     localStrategy            = require('passport-local'),
     passportLocalMongoose    = require('passport-local-mongoose');
 
+var User = require('./models/user');
 
 mongoose.connect("mongodb://localhost/Evenox");
 

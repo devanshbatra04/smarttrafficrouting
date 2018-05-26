@@ -1,9 +1,9 @@
-const express = require('express'),
-    mongoose = require("mongoose"),
-    passport = require('passport'),
-    bodyParser = require('body-parser'),
-    localStrategy = require('passport-local'),
-    passportLocalMongoose = require('passport-local-mongoose');
+const express                = require('express'),
+    mongoose                 = require("mongoose"),
+    passport                 = require('passport'),
+    bodyParser               = require('body-parser'),
+    localStrategy            = require('passport-local'),
+    passportLocalMongoose    = require('passport-local-mongoose');
 
 
 mongoose.connect("mongodb://localhost/Evenox");

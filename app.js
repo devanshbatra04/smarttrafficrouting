@@ -9,6 +9,16 @@ var User = require('./models/user');
 
 mongoose.connect("mongodb://localhost/Evenox");
 
+app.use(require("express-session")({
+    secret: "Please work this time",
+    resave : false,
+    saveUninitialized: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 var app = express();
 app.set('view engine', 'ejs');
 

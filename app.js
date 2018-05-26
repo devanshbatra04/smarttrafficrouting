@@ -62,6 +62,12 @@ app.get("/secret", function(req,res){
     res.render("secret");
 });
 
+app.get("/login", function(req,res){
+    res.render('login');
+})
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 var port = process.env.PORT || 5000;
 
 

@@ -60,7 +60,7 @@ app.post("/register", function(req,res){
     console.log("Posted");
 });
 
-app.get("/secret", isLoggedIn, function(req,res){
+app.get("/secret", function(req,res){
     res.render("secret");
 });
 
@@ -80,13 +80,7 @@ app.get("/logout",function(req,res){
     res.redirect("/");
 });
 
-function isLoggedIn(req,res,next){
-    if (req.isAuthenticated()) {
-        return next;
-    }    else {
-        res.redirect('/login');
-    }
-}
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////

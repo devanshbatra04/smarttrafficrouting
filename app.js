@@ -1,5 +1,8 @@
 var express = require('express');
 
+var mongoose = require("mongoose");
+mongoose.connect("mongodb://localhost/Evenox");
+
 var app = express();
 app.set('view engine', 'ejs');
 
@@ -12,7 +15,6 @@ app.get("/secret", function(req,res){
 });
 
 var port = process.env.PORT || 5000;
-
 
 
 app.listen(port, function(){

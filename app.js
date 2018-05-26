@@ -26,7 +26,11 @@ app.use(passport.session());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+/////////////////////////////////////// ROUTES//////////////////////////////////////////////////////////
 
+app.get("/register", function(req, res){
+    res.render("register");
+});
 
 app.get("/", function(req,res){
     res.render("home");

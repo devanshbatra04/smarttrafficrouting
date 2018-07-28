@@ -5,7 +5,7 @@ const express                = require('express'),
     localStrategy            = require('passport-local'),
     passportLocalMongoose    = require('passport-local-mongoose');
 
-var User = require('./models/user');
+var User = require('./models/customer');
 
 mongoose.connect("mongodb://admin:admin123@ds139921.mlab.com:39921/grubxvendor");
 
@@ -13,6 +13,7 @@ mongoose.connect("mongodb://admin:admin123@ds139921.mlab.com:39921/grubxvendor")
 var app = express();
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 
 
 app.use(require("express-session")({
@@ -59,6 +60,44 @@ app.post("/register", function(req,res){
     });
     console.log("Posted");
 });
+
+app.post("/api/register", function(req,res){
+    User.register(new User({
+        username : req.body.username,
+        email : req.body.email,
+        name: req.body.name,
+        phoneNumber: req.body.phone
+    }), req.body.password, function(err, user){
+        if (err){
+            res.status(400).send(err);
+        }
+        else {
+            console.log("user registered");
+            passport.authenticate("local")(req,res, function(){
+                res.status(200).send(req.user);
+            })
+        }
+    });
+});
+
+app.post('/api/login', function(req,res){
+    console.log(req.body);
+    passport.authenticate("local", {
+        successRedirect : "/successApi",
+        failureRedirect: "/failureApi"
+    })(req, res);
+
+});
+
+
+app.get('/successApi', function(req,res){
+    res.status(200).json(req.user);
+});
+
+app.get('/failureApi', function(req,res){
+    res.status(400).send("Failed");
+});
+
 
 app.get("/secret", function(req,res){
     res.render("secret");

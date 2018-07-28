@@ -7,7 +7,7 @@ const express                = require('express'),
 
 var User = require('./models/user');
 
-mongoose.connect("mongodb://localhost/Evenox");
+mongoose.connect("mongodb://admin:admin123@ds139921.mlab.com:39921/grubxvendor");
 
 
 var app = express();

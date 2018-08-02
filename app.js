@@ -82,10 +82,9 @@ app.post("/api/register", function(req,res){
 
 app.post('/api/login', function(req,res){
     console.log(req.body);
-    passport.authenticate("local", {
-        successRedirect : "/successApi",
-        failureRedirect: "/failureApi"
-    })(req, res);
+    passport.authenticate("local")(req,res, function(){
+        res.status(200).send(req.user);
+    })
 
 });
 
@@ -118,8 +117,6 @@ app.get("/logout",function(req,res){
     req.logout();
     res.redirect("/");
 });
-
-
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////

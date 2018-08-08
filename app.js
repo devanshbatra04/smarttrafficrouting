@@ -5,6 +5,9 @@ const express                = require('express'),
     localStrategy            = require('passport-local'),
     passportLocalMongoose    = require('passport-local-mongoose');
 
+var checksum = require('./paytm/web-2/model/checksum');
+var config = require('./paytm/web-2/config/config');
+
 var User = require('./models/customer');
 
 mongoose.connect("mongodb://admin:admin123@ds139921.mlab.com:39921/grubxvendor");
@@ -31,6 +34,33 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 /////////////////////////////////////// ROUTES//////////////////////////////////////////////////////////
+
+app.post('/checksumcreate',function(req, res) {
+    console.log("POST Order start");
+    var paramlist = req.body;
+    var paramarray = new Array();
+    console.log(paramlist);
+    for (name in paramlist)
+    {
+        if (name == 'PAYTM_MERCHANT_KEY') {
+            var PAYTM_MERCHANT_KEY = paramlist[name] ;
+        }else
+        {
+            paramarray[name] = paramlist[name] ;
+        }
+    }
+    console.log(paramarray);
+    paramarray['CALLBACK_URL'] = 'http://localhost:3000/response';  // in case if you want to send callback
+    console.log(PAYTM_MERCHANT_KEY);
+    checksum.genchecksum(paramarray, PAYTM_MERCHANT_KEY, function (err, result)
+    {
+          console.log(result);
+       res.render('pgredirect.ejs',{ 'restdata' : result });
+    });
+    //
+    // console.log("POST Order end");
+
+});
 
 app.get("/register", function(req, res){
     res.render("register");

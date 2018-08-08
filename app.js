@@ -55,10 +55,55 @@ app.post('/checksumcreate',function(req, res) {
     checksum.genchecksum(paramarray, PAYTM_MERCHANT_KEY, function (err, result)
     {
           console.log(result);
+          // res.send(result);
        res.render('pgredirect.ejs',{ 'restdata' : result });
     });
     //
     // console.log("POST Order end");
+
+});
+
+app.post('/checksumcreate-android',function(req, res) {
+    var paramlist = req.body;
+    var paramarray = new Array();
+    // console.log(paramlist);
+    for (name in paramlist)
+    {
+        if (name == 'PAYTM_MERCHANT_KEY') {
+            var PAYTM_MERCHANT_KEY = paramlist[name] ;
+        }else
+        {
+            paramarray[name] = paramlist[name] ;
+        }
+    }
+
+    checksum.genchecksum(paramarray, PAYTM_MERCHANT_KEY, function (err, result)
+    {
+        var toSend = {};
+        for (name in result)
+        {
+            if (name == 'PAYTM_MERCHANT_KEY') {
+            }else
+            {
+                toSend[name] = result[name] ;
+            }
+        }
+        // console.log(toSend);
+        // res.render('pgredirect.ejs',{ 'restdata' : result });
+        res.send(toSend);
+    });
+    //
+    // console.log("POST Order end");
+    // { ORDER_ID: 'vidisha123',
+    //     CUST_ID: 'cust001',
+    //     INDUSTRY_TYPE_ID: 'Retail',
+    //     CHANNEL_ID: 'WAP',
+    //     TXN_AMOUNT: '100',
+    //     MID: 'GrubXS78081696633587',
+    //     WEBSITE: 'http://app.grubx.in/',
+    //     PAYTM_MERCHANT_KEY: 'j31Do59VDDYkNXex',
+    //     CALLBACK_URL: 'http://localhost:5000/response' }
+
 
 });
 

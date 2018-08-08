@@ -39,7 +39,7 @@ app.post('/checksumcreate',function(req, res) {
     console.log("POST Order start");
     var paramlist = req.body;
     var paramarray = new Array();
-    console.log(paramlist);
+    // console.log(paramlist);
     for (name in paramlist)
     {
         if (name == 'PAYTM_MERCHANT_KEY') {
@@ -49,8 +49,8 @@ app.post('/checksumcreate',function(req, res) {
             paramarray[name] = paramlist[name] ;
         }
     }
-    console.log(paramarray);
-    paramarray['CALLBACK_URL'] = 'http://localhost:3000/response';  // in case if you want to send callback
+    //console.log(paramarray);
+    paramarray['CALLBACK_URL'] = 'http://localhost:5000/response';  // in case if you want to send callback
     console.log(PAYTM_MERCHANT_KEY);
     checksum.genchecksum(paramarray, PAYTM_MERCHANT_KEY, function (err, result)
     {
@@ -60,6 +60,24 @@ app.post('/checksumcreate',function(req, res) {
     //
     // console.log("POST Order end");
 
+});
+
+app.post('/response', function(req,res){
+    console.log("in response post");
+    var paramlist = req.body;
+    var paramarray = new Array();
+    console.log(paramlist);
+    if(checksum.verifychecksum(paramlist, config.PAYTM_MERCHANT_KEY))
+    {
+
+        console.log("true");
+        res.render('response.ejs',{ 'restdata' : "true" ,'paramlist' : paramlist});
+    }else
+    {
+        console.log("false");
+        res.render('response.ejs',{ 'restdata' : "false" , 'paramlist' : paramlist});
+    };
+//vidisha
 });
 
 app.get("/register", function(req, res){
@@ -117,6 +135,10 @@ app.post('/api/login', function(req,res){
     })
 
 });
+
+app.get('/paymentForm', function(req,res){
+    res.render('paymentForm', {config: config});
+})
 
 
 app.get('/successApi', function(req,res){

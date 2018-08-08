@@ -2,10 +2,10 @@
 
 var PAYTM_STAG_URL = 'https://pguat.paytm.com';
 var PAYTM_PROD_URL = 'https://secure.paytm.in';
-var MID = 'WorldP64425807474247';
+var MID = 'GrubXS78081696633587';
 var PAYTM_ENVIORMENT = 'TEST';   // PROD FOR PRODUCTION
-var PAYTM_MERCHANT_KEY = 'kbzk1DSbJiV_O3p5';
-var WEBSITE = 'worldpressplg';
+var PAYTM_MERCHANT_KEY = 'j31Do59VDDYkNXex';
+var WEBSITE = 'WEBSTAGING';
 var CHANNEL_ID =  'WEB';
 var INDUSTRY_TYPE_ID = 'Retail';
 var PAYTM_FINAL_URL = '';

@@ -76,8 +76,7 @@ app.post('/response', function(req,res){
     {
         console.log("false");
         res.render('response.ejs',{ 'restdata' : "false" , 'paramlist' : paramlist});
-    };
-//vidisha
+    }
 });
 
 app.get("/register", function(req, res){

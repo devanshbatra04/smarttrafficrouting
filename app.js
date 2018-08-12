@@ -241,6 +241,14 @@ app.post("/newOrder", function(req, res){
     });
 })
 
+app.post("/showOrders", function(req, res){
+    User.findOne({username: req.body.username}).populate("orders").exec(function(err, user){
+        if (err) console.log(err);
+        res.send(user.orders);
+    })
+})
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 var port = process.env.PORT || 5000;
@@ -248,12 +256,4 @@ var port = process.env.PORT || 5000;
 
 app.listen(port, function(){
     console.log("Running on port " + port);
-    User.findOne({username: "admin"}).populate("orders").exec(function(err, user){
-        if (err) console.log(err);
-        console.log(user);
-    })
-    // User.findOne({username: "admin"}, function(err, user){
-    //     console.log(user);
-    // })
-
 });

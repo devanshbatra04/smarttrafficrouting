@@ -2,9 +2,9 @@
 
 var PAYTM_STAG_URL = 'https://pguat.paytm.com';
 var PAYTM_PROD_URL = 'https://secure.paytm.in';
-var MID = 'GrubXS78081696633587';
+var MID = 'GrubXS91341956540196';
 var PAYTM_ENVIORMENT = 'TEST';   // PROD FOR PRODUCTION
-var PAYTM_MERCHANT_KEY = 'j31Do59VDDYkNXex';
+var PAYTM_MERCHANT_KEY = 'doLhF%O2!Y3@h9yU';
 var WEBSITE = 'WEBSTAGING';
 var CHANNEL_ID =  'WEB';
 var INDUSTRY_TYPE_ID = 'Retail';

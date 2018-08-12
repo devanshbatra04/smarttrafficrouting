@@ -12,4 +12,4 @@ var orderSchema = mongoose.Schema({
 var Order = mongoose.model("order", orderSchema);
 
 
-module.exports = [Order, orderSchema];
+module.exports = Order;

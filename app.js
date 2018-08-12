@@ -9,6 +9,7 @@ var checksum = require('./paytm/web-2/model/checksum');
 var config = require('./paytm/web-2/config/config');
 
 var User = require('./models/customer');
+var Order = require('./models/order');
 
 mongoose.connect("mongodb://admin:admin123@ds139921.mlab.com:39921/grubxvendor");
 
@@ -215,6 +216,30 @@ app.get("/logout",function(req,res){
 });
 
 
+app.post("/newOrder", function(req, res){
+    if (typeof(req.body.items) === "string") {
+        req.body.items = JSON.parse(req.body.items);
+        // console.log(req.body);
+    }
+    req.body.status = 0;
+    let newOrder = new Order(req.body);
+    newOrder.save(function (err, order) {
+        if (err) {
+            console.log(err);
+            res.send(err);
+        }
+
+        User.findOne({username : "admin"}, function(err, User){
+            if (err) console.log(err);
+            else {
+                User.orders.push(order);
+                console.log(User);
+            }
+        });
+        res.send(order);
+    });
+})
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 var port = process.env.PORT || 5000;
@@ -222,4 +247,5 @@ var port = process.env.PORT || 5000;
 
 app.listen(port, function(){
     console.log("Running on port " + port);
+
 });

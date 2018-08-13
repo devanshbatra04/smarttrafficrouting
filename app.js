@@ -233,7 +233,6 @@ app.post("/newOrder", function(req, res){
             if (err) console.log(err);
             else {
                 User.orders.push(order);
-                console.log(User.popula);
                 res.send(order);
 
             }

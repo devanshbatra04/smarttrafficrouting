@@ -7,6 +7,8 @@ var userSchema = mongoose.Schema({
     email: String,
     name: String,
     phoneNumber : String,
+    MobVerified: Boolean,
+    OTP: Number,
     orders: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "order"

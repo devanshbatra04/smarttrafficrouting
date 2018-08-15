@@ -4,6 +4,7 @@ const express                = require('express'),
     bodyParser               = require('body-parser'),
     localStrategy            = require('passport-local'),
     passportLocalMongoose    = require('passport-local-mongoose');
+    request                  = require('request');
 
 var checksum = require('./paytm/web-2/model/checksum');
 var config = require('./paytm/web-2/config/config');
@@ -159,7 +160,9 @@ app.post("/api/register", function(req,res){
         username : req.body.username,
         email : req.body.email,
         name: req.body.name,
-        phoneNumber: req.body.phone
+        phoneNumber: req.body.phone,
+        MobVerified: false,
+        OTP : Math.floor(Math.random() * 10000)
     }), req.body.password, function(err, user){
         if (err){
             res.status(400).send(err);
@@ -223,16 +226,20 @@ app.post("/newOrder", function(req, res){
     }
     req.body.status = 0;
     let newOrder = new Order(req.body);
+
     newOrder.save(function (err, order) {
         if (err) {
             console.log(err);
             res.send(err);
         }
+        console.log("here");
+
 
         User.findOne({username : req.body.username }, function(err, User){
             if (err) console.log(err);
             else {
                 User.orders.push(order);
+                // request.post('http://localhost:5001/newOrder', {form:req.body});
                 res.send(order);
 
             }

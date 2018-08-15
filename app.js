@@ -3,8 +3,9 @@ const express                = require('express'),
     passport                 = require('passport'),
     bodyParser               = require('body-parser'),
     localStrategy            = require('passport-local'),
-    passportLocalMongoose    = require('passport-local-mongoose');
-    request                  = require('request');
+    passportLocalMongoose    = require('passport-local-mongoose'),
+    request                  = require('request'),
+    sendSMS                  = require('./sendSMS');
 
 var checksum = require('./paytm/web-2/model/checksum');
 var config = require('./paytm/web-2/config/config');
@@ -162,7 +163,7 @@ app.post("/api/register", function(req,res){
         name: req.body.name,
         phoneNumber: req.body.phone,
         MobVerified: false,
-        OTP : Math.floor(Math.random() * 10000)
+        OTP : Math.floor(Math.random() * 100000)
     }), req.body.password, function(err, user){
         if (err){
             res.status(400).send(err);
@@ -170,6 +171,7 @@ app.post("/api/register", function(req,res){
         else {
             console.log("user registered");
             passport.authenticate("local")(req,res, function(){
+                sendSMS(req.user.phoneNumber, req.user.OTP);
                 res.status(200).send(req.user);
             })
         }

@@ -249,6 +249,35 @@ app.post("/newOrder", function(req, res){
     });
 })
 
+app.post("/activate", function(req, res){
+    User.findOneAndUpdate({username: req.body.username}, {MobVerified: true}, function(err, Customer){
+        if (err) {
+            console.log(err);
+            res.sendStatus(400);
+        }
+        if (Customer === null ) res.sendStatus(404);
+        Customer.MobVerified = true;
+        res.status(200).send(Customer);
+
+
+    })
+
+})
+app.get("/activate/:username", function(req, res){
+    User.findOneAndUpdate({username: req.params.username}, {MobVerified: true}, function(err, Customer){
+        if (err) {
+            console.log(err);
+            res.sendStatus(400);
+        }
+        if (Customer === null ) res.sendStatus(404);
+        Customer.MobVerified = true;
+        res.status(200).send(Customer);
+
+
+    })
+
+})
+
 app.post("/showOrders", function(req, res){
     User.findOne({username: req.body.username}).populate("orders").exec(function(err, user){
         if (err) console.log(err);

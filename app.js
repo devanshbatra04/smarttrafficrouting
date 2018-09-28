@@ -12,6 +12,10 @@ var config = require('./paytm/web-2/config/config');
 
 var User = require('./models/customer');
 var Order = require('./models/order');
+var Colors = require ('./models/objects');
+
+
+
 
 mongoose.connect("mongodb://admin:admin123@ds139921.mlab.com:39921/grubxvendor");
 
@@ -276,6 +280,11 @@ app.get("/activate/:username", function(req, res){
 
     })
 
+})
+
+
+app.get("/objects/:name", function(req, res){
+    res.send(Colors[req.params.name]);
 })
 
 app.post("/showOrders", function(req, res){

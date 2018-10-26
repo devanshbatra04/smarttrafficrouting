@@ -7,17 +7,15 @@ const express                = require('express'),
     request                  = require('request'),
     sendSMS                  = require('./sendSMS');
 
-var checksum = require('./paytm/web-2/model/checksum');
-var config = require('./paytm/web-2/config/config');
 
-var User = require('./models/customer');
-var Order = require('./models/order');
-var Colors = require ('./models/objects');
+var User = require('./models/user');
+var stolenCar = require('./models/stolenCar')
 
 
 
 
-mongoose.connect("mongodb://admin:admin123@ds139921.mlab.com:39921/grubxvendor");
+
+mongoose.connect("mongodb://admin:admin123@ds143293.mlab.com:43293/bakhodihacks");
 
 
 var app = express();
@@ -42,94 +40,6 @@ passport.deserializeUser(User.deserializeUser());
 
 /////////////////////////////////////// ROUTES//////////////////////////////////////////////////////////
 
-app.post('/checksumcreate',function(req, res) {
-    console.log("POST Order start");
-    var paramlist = req.body;
-    var paramarray = new Array();
-    // console.log(paramlist);
-    for (name in paramlist)
-    {
-        if (name == 'PAYTM_MERCHANT_KEY') {
-            var PAYTM_MERCHANT_KEY = paramlist[name] ;
-        }else
-        {
-            paramarray[name] = paramlist[name] ;
-        }
-    }
-    //console.log(paramarray);
-    paramarray['CALLBACK_URL'] = 'http://localhost:5000/response';  // in case if you want to send callback
-    console.log(PAYTM_MERCHANT_KEY);
-    checksum.genchecksum(paramarray, PAYTM_MERCHANT_KEY, function (err, result)
-    {
-          console.log(result);
-          // res.send(result);
-       res.render('pgredirect.ejs',{ 'restdata' : result });
-    });
-    //
-    // console.log("POST Order end");
-
-});
-
-app.post('/checksumcreate-android',function(req, res) {
-    var paramlist = req.body;
-    var paramarray = new Array();
-    // console.log(paramlist);
-    for (name in paramlist)
-    {
-        if (name == 'PAYTM_MERCHANT_KEY') {
-            var PAYTM_MERCHANT_KEY = paramlist[name] ;
-        }else
-        {
-            paramarray[name] = paramlist[name] ;
-        }
-    }
-
-    checksum.genchecksum(paramarray, PAYTM_MERCHANT_KEY, function (err, result)
-    {
-        var toSend = {};
-        for (name in result)
-        {
-            if (name == 'PAYTM_MERCHANT_KEY') {
-            }else
-            {
-                toSend[name] = result[name] ;
-            }
-        }
-        // console.log(toSend);
-        // res.render('pgredirect.ejs',{ 'restdata' : result });
-        res.send(toSend);
-    });
-    //
-    // console.log("POST Order end");
-    // { ORDER_ID: 'vidisha123',
-    //     CUST_ID: 'cust001',
-    //     INDUSTRY_TYPE_ID: 'Retail',
-    //     CHANNEL_ID: 'WAP',
-    //     TXN_AMOUNT: '100',
-    //     MID: 'GrubXS78081696633587',
-    //     WEBSITE: 'http://app.grubx.in/',
-    //     PAYTM_MERCHANT_KEY: 'j31Do59VDDYkNXex',
-    //     CALLBACK_URL: 'http://localhost:5000/response' }
-
-
-});
-
-app.post('/response', function(req,res){
-    console.log("in response post");
-    var paramlist = req.body;
-    var paramarray = new Array();
-    console.log(paramlist);
-    if(checksum.verifychecksum(paramlist, config.PAYTM_MERCHANT_KEY))
-    {
-
-        console.log("true");
-        res.render('response.ejs',{ 'restdata' : "true" ,'paramlist' : paramlist});
-    }else
-    {
-        console.log("false");
-        res.render('response.ejs',{ 'restdata' : "false" , 'paramlist' : paramlist});
-    }
-});
 
 app.get("/register", function(req, res){
     res.render("register");
@@ -144,7 +54,10 @@ app.post("/register", function(req,res){
         username : req.body.username,
         email : req.body.email,
         name: req.body.name,
-        phoneNumber: req.body.phone
+        phoneNumber: req.body.phone,
+        aadhaar: req.body.aadhaar,
+        license: req.body.license,
+        address: req.body.address
     }), req.body.password, function(err, user){
         if (err){
             console.log(err);
@@ -160,13 +73,50 @@ app.post("/register", function(req,res){
     console.log("Posted");
 });
 
+
+app.post("/register", function(req,res){
+    User.register(new User({
+        username : req.body.username,
+        email : req.body.email,
+        name: req.body.name,
+        phoneNumber: req.body.phone,
+        aadhaar: req.body.aadhaar,
+        license: req.body.license,
+        address: req.body.address
+    }), req.body.password, function(err, user){
+        if (err){
+            console.log(err);
+            res.render('register');
+        }
+        else {
+            console.log("user registered");
+            passport.authenticate("local")(req,res, function(){
+                res.redirect("secret");
+            })
+        }
+    });
+    console.log("Posted");
+});
+
+app.post("/api/newStolen", function(req, res){
+    stolenCar.create({
+        ownerLicense: req.body.ownerLicense,
+        licensePlate: req.body.licensePlate
+    }, function(err, car){
+        if (err) res.send(err);
+        else res.send(car);
+    })
+})
+
 app.post("/api/register", function(req,res){
     User.register(new User({
         username : req.body.username,
         email : req.body.email,
         name: req.body.name,
         phoneNumber: req.body.phone,
-        MobVerified: false,
+        aadhaar: req.body.aadhaar,
+        license: req.body.license,
+        address: req.body.address,
         OTP : Math.floor(Math.random() * 100000)
     }), req.body.password, function(err, user){
         if (err){
@@ -189,10 +139,6 @@ app.post('/api/login', function(req,res){
     })
 
 });
-
-app.get('/paymentForm', function(req,res){
-    res.render('paymentForm', {config: config});
-})
 
 
 app.get('/successApi', function(req,res){
@@ -225,33 +171,7 @@ app.get("/logout",function(req,res){
 });
 
 
-app.post("/newOrder", function(req, res){
-    if (typeof(req.body.items) === "string") {
-        req.body.items = JSON.parse(req.body.items);
-        // console.log(req.body);
-    }
-    req.body.status = 0;
-    let newOrder = new Order(req.body);
 
-    newOrder.save(function (err, order) {
-        if (err) {
-            console.log(err);
-            res.send(err);
-        }
-        console.log("here");
-
-
-        User.findOne({username : req.body.username }, function(err, User){
-            if (err) console.log(err);
-            else {
-                User.orders.push(order);
-                // request.post('http://localhost:5001/newOrder', {form:req.body});
-                res.send(order);
-
-            }
-        });
-    });
-})
 
 app.post("/activate", function(req, res){
     User.findOneAndUpdate({username: req.body.username}, {MobVerified: true}, function(err, Customer){
@@ -280,18 +200,6 @@ app.get("/activate/:username", function(req, res){
 
     })
 
-})
-
-
-app.get("/objects/:name", function(req, res){
-    res.send(Colors[req.params.name]);
-})
-
-app.post("/showOrders", function(req, res){
-    User.findOne({username: req.body.username}).populate("orders").exec(function(err, user){
-        if (err) console.log(err);
-        res.send(user.orders);
-    })
 })
 
 

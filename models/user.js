@@ -4,21 +4,19 @@ var passportLocalMongoose = require("passport-local-mongoose");
 var userSchema = mongoose.Schema({
     username: String,
     password : String,
-    email: String,
+    email : String,
     name: String,
-    phoneNumber : String,
-    MobVerified: Boolean,
-    OTP: Number,
-    orders: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "order"
-    }]
+    phoneNumber: String,
+    aadhaar: String,
+    license: String,
+    address: String,
+    OTP: String
 });
 
 userSchema.plugin(passportLocalMongoose);
 
 
-var User = mongoose.model("Customer", userSchema);
+var User = mongoose.model("User", userSchema);
 
 
 module.exports = User;

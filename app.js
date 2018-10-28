@@ -111,6 +111,14 @@ app.post("/api/newSpot", function(req, res){
     })
 })
 
+app.get('/api/Spots', function(req,res){
+    console.log(req.query);
+    carSpottings.find(req.query, function(err, spots){
+        if (err) res.send(err)
+        else res.send(spots);
+    })
+})
+
 app.post("/api/newStolen", function(req, res){
     stolenCar.create({
         ownerLicense: req.body.ownerLicense,

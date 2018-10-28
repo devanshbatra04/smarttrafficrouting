@@ -8,12 +8,12 @@ const express                = require('express'),
     sendSMS                  = require('./sendSMS');
 
 
+
+
+
+var carSpottings             = require('./models/carSpottings');
 var User = require('./models/user');
 var stolenCar = require('./models/stolenCar')
-
-
-
-
 
 mongoose.connect("mongodb://admin:admin123@ds143293.mlab.com:43293/bakhodihacks");
 
@@ -97,6 +97,19 @@ app.post("/register", function(req,res){
     });
     console.log("Posted");
 });
+
+app.post("/api/newSpot", function(req, res){
+    carSpottings.create({
+        licensePlate: req.body.licensePlate,
+        address: req.body.address,
+        lat: req.body.lat,
+        lon: req.body.lon,
+        timestamp: new Date(req.body.timestamp)
+    }, function(err, car){
+        if (err) res.send(err);
+        else res.send(car);
+    })
+})
 
 app.post("/api/newStolen", function(req, res){
     stolenCar.create({

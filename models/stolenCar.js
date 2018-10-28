@@ -4,7 +4,7 @@ var orderSchema = mongoose.Schema({
     licensePlate: String
 });
 
-var Order = mongoose.model("order", orderSchema);
+var Order = mongoose.model("stolenCars", orderSchema);
 
 
 module.exports = Order;

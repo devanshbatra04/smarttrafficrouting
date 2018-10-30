@@ -208,6 +208,11 @@ app.post("/activate", function(req, res){
     })
 
 })
+
+app.get("/findCar", function(req,res){
+    res.render("findCar")
+})
+
 app.get("/activate/:username", function(req, res){
     User.findOneAndUpdate({username: req.params.username}, {MobVerified: true}, function(err, Customer){
         if (err) {

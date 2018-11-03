@@ -9,7 +9,8 @@ const express                = require('express'),
     trashCan                 = require('./models/trashCan'),
     binRequest               = require('./models/binRequest'),
     pickupSchedule           = require('./models/pickupSchedule'),
-    complaint                = require('./models/complaint')
+    complaint                = require('./models/complaint'),
+    predictedClusters        = require('./models/predictedClusters');
 
 
 
@@ -262,15 +263,52 @@ app.post("/getincentive", function(req, res){
 
 app.post('/complaint', function(req, res){
     complaint.create({
-        lat: String,
-        lon: String,
-        username: String,
-        status: Number,
-        comments: String,
-        date: String
+        lat: req.body.lat,
+        lon: req.body.lon,
+        username: req.body.username,
+        comments: req.body.comments,
+        date: new Date().toString()
     }, function(err, complaint){
         if (err) res.send(err);
         else res.send(complaint);
+    })
+})
+
+app.post("/addCluster", function(req, res){
+    predictedClusters.update( { lat : req.body.lat, lon: req.body.lon }, { lat : req.body.lat, lon : req.body.lon, cluster: req.body.cluster }, { upsert : true }, function(err){
+        if (err) res.send(err);
+        else res.send("updated");
+    } );
+
+})
+
+app.get("/getPredictedClusters", function(req, res){
+    predictedClusters.find({}, function(err, clusters){
+        if (err) res.send(err);
+        else{
+            res.render("predictedClusters", {coords: clusters})
+        }
+    })
+})
+
+app.post("/predictedClusters", function(req, res){
+    predictedClusters.collection.drop(function(err){
+        if (err) res.send(err);
+        else {
+            console.log("dropped");
+            predictedClusters.create(req.body.predictions, function(err, predictions){
+                if (err) res.send (err);
+                res.send("added to db");
+            })
+        }
+
+    })
+})
+
+app.get("/getClusters", function(req, res){
+    predictedClusters.find({}, function(err, clusters){
+        if(err) res.send(err);
+        else res.send(clusters);
     })
 })
 

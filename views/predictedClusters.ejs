@@ -50,7 +50,7 @@
         }
         Markers[i] = [];
         var counter = 0;
-        var colors = ["red", "blue", "green", "yellow", "orange", "black", "white", "red", "blue", "green", "yellow", "orange", "black", "white", "red", "blue", "green", "yellow", "orange", "black", "white"]
+        var colors = ["#C70039", "#0000FF", "#A0FF00", "#FFC000", "#FF6200", "#000000", "#FFFFFF", "#DAF7A6", "#9689AC", "#145A32", "#784212", "#FF5733", "#229954", "#34495E", "#AAB7B8", "#CD5C5C", "#DC7633", "#D35400", "#D0D3D4", "#2C3E50", "#B2BABB"]
         data.forEach(function(d, i){
             Markers[counter] = new google.maps.Marker({position: {lat: Number(d.lat), lng: Number(d.lon)},
                 icon: {

@@ -5,17 +5,19 @@ const express                = require('express'),
     localStrategy            = require('passport-local'),
     passportLocalMongoose    = require('passport-local-mongoose'),
     request                  = require('request'),
-    sendSMS                  = require('./sendSMS');
+    sendSMS                  = require('./sendSMS'),
+    trashCan                 = require('./models/trashCan'),
+    binRequest               = require('./models/binRequest'),
+    pickupSchedule           = require('./models/pickupSchedule'),
+    complaint                = require('./models/complaint')
 
 
 
 
 
-var carSpottings             = require('./models/carSpottings');
 var User = require('./models/user');
-var stolenCar = require('./models/stolenCar')
 
-mongoose.connect("mongodb://admin:admin123@ds143293.mlab.com:43293/bakhodihacks");
+mongoose.connect("mongodb://sanjay:sanjay123@ds251223.mlab.com:51223/sanjayji");
 
 
 var app = express();
@@ -98,36 +100,49 @@ app.post("/register", function(req,res){
     console.log("Posted");
 });
 
-app.post("/api/newSpot", function(req, res){
-    carSpottings.create({
-        licensePlate: req.body.licensePlate,
-        address: req.body.address,
+
+app.post("/newbin", function(req, res){
+    trashCan.create({
         lat: req.body.lat,
-        lon: req.body.lon,
-        timestamp: new Date(req.body.timestamp)
-    }, function(err, car){
+        lon: req.body.lon
+    }, function(err,trashCan){
         if (err) res.send(err);
-        else res.send(car);
+        else res.send(trashCan);
     })
 })
 
-app.get('/api/Spots', function(req,res){
-    console.log(req.query);
-    carSpottings.find(req.query, function(err, spots){
-        if (err) res.send(err)
-        else res.send(spots);
+app.get("/bins", function(req, res){
+    trashCan.find({}, function(err, Cans){
+        if (err) res.send(err);
+        else res.send(Cans);
     })
 })
 
-app.post("/api/newStolen", function(req, res){
-    stolenCar.create({
-        ownerLicense: req.body.ownerLicense,
-        licensePlate: req.body.licensePlate
-    }, function(err, car){
+app.post("/requestbin", function(req, res){
+    binRequest.find({location: req.body.location}, function(err, oldRequest){
         if (err) res.send(err);
-        else res.send(car);
+        if(oldRequest.length){
+            res.send({message: `request at location ${oldRequest[0].location} already raised by ${oldRequest[0].username} on ${oldRequest[0].date}`});
+        } else {
+            binRequest.create({
+                location: req.body.location,
+                username: req.body.username,
+                date: new Date().toString()
+            }, function(err, newRequest){
+                res.send({message: "request created"});
+            })
+        }
+
+    })
+});
+app.get("/binrequests", function(req,res){
+    binRequest.find({}, function(err, requests){
+        if (err) res.send(err);
+        res.send(requests);
     })
 })
+
+
 
 app.post("/api/register", function(req,res){
     User.register(new User({
@@ -138,6 +153,7 @@ app.post("/api/register", function(req,res){
         aadhaar: req.body.aadhaar,
         license: req.body.license,
         address: req.body.address,
+        incentive: 0,
         OTP : Math.floor(Math.random() * 100000)
     }), req.body.password, function(err, user){
         if (err){
@@ -209,8 +225,53 @@ app.post("/activate", function(req, res){
 
 })
 
-app.get("/findCar", function(req,res){
-    res.render("findCar")
+app.post("/schedulePickup", function(req, res){
+    pickupSchedule.create({
+        lat: req.body.lat,
+        lon: req.body.lat,
+        recyclable: req.body.recyclable,
+        nonRecyclable: req.body.nonRecyclable,
+        username: req.body.username,
+        status: 1,
+        comments: req.body.comments
+    }, function(err, pickup){
+        if (err) res.send(err);
+        else res.send({
+            message: "Pickup request Created successfully"
+        })
+    })
+})
+
+app.post("/incrementincentive", function(req, res){
+    User.findOne({username:req.body.username}, function(err, user){
+        if (err) res.send(err);
+        else {
+            user.incentive = Number(user.incentive) + Number(req.body.weight);
+            user.save();
+            res.send(user);
+        }
+    });
+});
+
+app.post("/getincentive", function(req, res){
+    User.findOne({username: req.body.username}, function(err, user){
+        if (err) res.send(err);
+        else res.send(`Your due incentive till date is ${user.incentive}. Continue donating recyclable waste to get much more!`);
+    })
+})
+
+app.post('/complaint', function(req, res){
+    complaint.create({
+        lat: String,
+        lon: String,
+        username: String,
+        status: Number,
+        comments: String,
+        date: String
+    }, function(err, complaint){
+        if (err) res.send(err);
+        else res.send(complaint);
+    })
 })
 
 app.get("/activate/:username", function(req, res){

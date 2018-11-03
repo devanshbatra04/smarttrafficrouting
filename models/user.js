@@ -10,7 +10,8 @@ var userSchema = mongoose.Schema({
     aadhaar: String,
     license: String,
     address: String,
-    OTP: String
+    OTP: String,
+    incentive: Number
 });
 
 userSchema.plugin(passportLocalMongoose);

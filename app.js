@@ -305,6 +305,17 @@ app.get("/getPredictedClusters", function(req, res){
     })
 })
 
+app.get("/getCluster", function(req, res){
+    predictedClusters.find({
+        cluster: req.query.cluster
+    }, function(err, clusters){
+        if (err) res.send(err);
+        else{
+            res.send(clusters)
+        }
+    })
+})
+
 app.post("/predictedClusters", function(req, res){
     predictedClusters.collection.drop(function(err){
         if (err) res.send(err);
@@ -339,6 +350,9 @@ app.get("/activate/:username", function(req, res){
 
     })
 
+})
+app.get('/seeroutes', function(req, res){
+    res.render('routing');
 })
 
 

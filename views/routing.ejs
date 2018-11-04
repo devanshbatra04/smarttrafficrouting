@@ -1,0 +1,67 @@
+<html>
+<head>
+    <title>
+        Chu Chu
+    </title>
+</head>
+<body>
+<input type="text" placeholder="Enter Cluster Number" id="clusterN">
+<button onclick="getPath()">Get Path</button>
+<style>
+    /* Set the size of the div element that contains the map */
+    #map {
+        height: 900px;  /* The height is 400 pixels */
+        width: 100%;  /* The width is the width of the web page */
+    }
+</style>
+<div id="map"></div>
+<script>
+    var map;
+    // Initialize and add the map
+    function initMap() {
+        // The location of Uluru
+        map = new google.maps.Map(
+            document.getElementById('map'), {zoom: 15, center: {lat: 26.96350023974376, lng: 75.88082836887753}});
+
+        var s = 'https://maps.googleapis.com/maps/api/directions/json?origin=26.856023981639915,75.97801240424252&destination=26.832467081091842,75.99291091477959&waypoints=optimize:true|26.856023981639915,75.97801240424252|26.891788148339426,75.99243527283562|26.81363163020587,75.96832410561223|26.80487940445907,75.97769581590752|26.874742735737833,75.97897136724603|26.85739246175021,75.96687662404017|26.842364900507548,75.9986012666823|26.831761948800654,75.99319905912061|26.825089801670565,75.96050519313471|26.86201668910748,75.97025685068098|26.821788032924395,75.97292012196645|26.83177741535627,75.99496475674884|26.875485761035126,75.99676488403888|26.83825566299765,75.99601927952472|26.835025238866287,75.97794462341123|26.88644704287693,75.99432235745566|26.85190987190313,75.97552743284976|26.84013477802134,75.95365953384605|26.806054112110527,75.9793395503959|26.86628160195576,75.99382127878168&key=AIzaSyAy1rJOXaGB3oKT_Q4x_NYkYVjIYPDdlgI'
+        $.get(s, function(data){
+            window.d = (data);
+            var path = google.maps.geometry.encoding.decodePath(d.routes[0].overview_polyline.points);
+            var flightPath = new google.maps.Polyline({
+                path: path,
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+            });
+            flightPath.setMap(map);
+        })
+
+
+        // The marker, positioned at Uluru
+
+    }
+</script>
+<!--Load the API from the specified URL
+* The async attribute allows the browser to render the page while the API loads
+* The key parameter will contain your own API key (which is not needed for this tutorial)
+* The callback parameter executes the initMap() function
+-->
+<script>
+    function getPath(){
+
+    }
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAy1rJOXaGB3oKT_Q4x_NYkYVjIYPDdlgI&callback=initMap&libraries=geometry">
+</script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+
+
+</script>
+
+</body>
+</html>

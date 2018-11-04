@@ -60,7 +60,8 @@ app.post("/register", function(req,res){
         phoneNumber: req.body.phone,
         aadhaar: req.body.aadhaar,
         license: req.body.license,
-        address: req.body.address
+        address: req.body.address,
+        incentive: 0
     }), req.body.password, function(err, user){
         if (err){
             console.log(err);
@@ -253,6 +254,19 @@ app.post("/incrementincentive", function(req, res){
         }
     });
 });
+
+app.get("/incentives", function(req, res){
+    res.render("incentives");
+});
+
+app.post("/increment", function(req, res){
+    User.findOne({username: req.body.username}, function(err, user){
+        user.incentive = Number(user.incentive) + Number(req.body.weight) * 0.83;
+        user.save();
+        sendSMS(user.phoneNumber, user, Number(req.body.weight) * 0.83, req.body.weight);
+        res.render("userIncentive", {user: user, newIncentive: Number(req.body.weight) * 0.83, weight: req.body.weight});
+    })
+})
 
 app.post("/getincentive", function(req, res){
     User.findOne({username: req.body.username}, function(err, user){

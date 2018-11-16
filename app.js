@@ -18,8 +18,8 @@ const express                = require('express'),
 
 var User = require('./models/user');
 
-mongoose.connect("mongodb://sanjay:sanjay123@ds251223.mlab.com:51223/sanjayji");
-
+//mongoose.connect("mongodb://sanjay:sanjay123@ds251223.mlab.com:51223/sanjayji");
+mongoose.connect("mongodb://admin:admin123@ds143293.mlab.com:43293/bakhodihacks");
 
 var app = express();
 app.set('view engine', 'ejs');
@@ -298,6 +298,7 @@ app.post("/addCluster", function(req, res){
 
 app.get("/getPredictedClusters", function(req, res){
     predictedClusters.find({}, function(err, clusters){
+        
         if (err) res.send(err);
         else{
             res.render("predictedClusters", {coords: clusters})
